@@ -18,11 +18,3 @@ class Cellular_Automata {
         const std::vector<std::vector<T>>& getState() const;  
     
 }; 
-
-class Rules_Container {
-    private: 
-    public: 
-        Rules_Container(
-            
-         ) 
-}
