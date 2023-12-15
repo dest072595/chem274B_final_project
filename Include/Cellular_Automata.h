@@ -245,10 +245,19 @@ std::function<void (std::vector<std::vector<T>>& state, int rpad, int cpad)> Fix
     };
 }
 
+
+// Update Rule for Staight Coniditional Progresion as Described in Lecture
 template<typename T>
-std::function<void (std::vector<std::vector<T>>& state, size_t rpad, size_t cpad)> StraightConditionalTransition(const std::map<T,T>& value){
-    return [](std::vector<std::vector<T>>& state, size_t rpad, size_t cpad){};
+std::function<T (const std::array<std::array<T,1>,1>) > StraightConditionalRule (std::map<T,T> update){
+  return [update](const std::array<std::array<T,1>,1> neighborhood)-> T 
+{   
+    int me = neighborhood.at(0).at(0); 
+    int next = update.at(me); 
+    return next ; 
+}; 
 }
+
+
 
 // Update Rule for "Majority Rule" as Described in Lecture
 std::function<bool (const std::array<std::array<bool,3>,1>) > MajorityRule = [](const std::array<std::array<bool,3>,1> neighborhood)-> bool 
@@ -263,4 +272,5 @@ std::function<bool (const std::array<std::array<bool,3>,1>) > MajorityRule = [](
 
     return count >= 2;
 }; 
+
 
