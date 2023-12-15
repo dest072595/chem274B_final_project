@@ -55,6 +55,7 @@
         "*.tpp": "cpp",
         "deque": "cpp",
         "queue": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "iostream": "cpp"
     }
 }
