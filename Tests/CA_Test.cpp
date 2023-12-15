@@ -31,9 +31,14 @@ int main(){
         // This rule replaces everyone with a 'c' person
     std::function<Person (const std::array<std::array<Person, n_cols>, n_rows>&) > updateRule = [](const std::array<std::array<Person, n_cols>, n_rows>& arr)-> Person 
     { 
-        Person p;
-        p.health = 'c';
-        return p;
+        Person p = arr.at(1).at(1);
+        Person r; 
+        if (p.health == 'h')
+            r.health = 'c';
+        else 
+            r.health = 'q' ;
+        return r;
+
     }; 
     
 
@@ -41,7 +46,7 @@ int main(){
         // This rule does nothing
     std::function<void(std::vector<std::vector<Person>>&, size_t, size_t)> outOfBoundsRule = [](std::vector<std::vector<Person>>& state, size_t rpad, size_t cpad)->void{};
 
-    print_state(initial_state);
+  
 
     Cellular_Automata<Person, n_rows, n_cols> CAP (
         initial_state, 
@@ -49,10 +54,19 @@ int main(){
         outOfBoundsRule
     );
 
-    print_state(CAP.getState()); 
+
+    print_state(initial_state);
+
     CAP.update(); 
 
     print_state(CAP.getState()); 
 
+    CAP.update(); 
+
+    print_state(CAP.getState()); 
+
+    CAP.update(); 
+
+    print_state(CAP.getState()); 
     return 0; 
 }
