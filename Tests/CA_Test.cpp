@@ -1,3 +1,15 @@
+// Chem 274B: Software Engineering Fundamentals for
+//            Molecular Sciences  
+// 
+// Group 11 
+//
+// This is file is a simple demonstrator and tester of the Cellular_Automata class
+// It shows the how to create and exercise cellular automata
+// It shows examples of provided rules and how they behave
+// As well as how to construct your own more complicated behavior
+
+
+
 #include "Cellular_Automata.h"
 
 struct Person{
@@ -16,13 +28,13 @@ void print_state(const std::vector<std::vector<Person>>& state){
 
 int main(){
     // rows of the initial state 
-    constexpr size_t rows = 2; 
+    constexpr size_t rows = 5; 
     // columns of the inital state
-    constexpr size_t cols = 3; 
+    constexpr size_t cols = 8; 
     // rows in the neighborhood
-    constexpr size_t n_rows = 1; 
+    constexpr size_t n_rows = 3; 
     // columns in the neighborhood
-    constexpr size_t n_cols  = 1; 
+    constexpr size_t n_cols  = 3; 
 
     // create a 4 row by 5 column initial state
     std::vector<std::vector<Person>> initial_state (rows, std::vector<Person>(cols, Person())); 
@@ -55,7 +67,7 @@ int main(){
     // create boundary rule 
         // This rule does nothing
     //std::function<void(std::vector<std::vector<Person>>&, size_t, size_t)> outOfBoundsRule = [](std::vector<std::vector<Person>>& state, size_t rpad, size_t cpad)->void{};
-    auto outOfBoundsRule = FixedBoundary<Person>(Person{'x'});
+    auto outOfBoundsRule = FixedBoundaryRule<Person>(Person{'x'});
 
     Cellular_Automata<Person, n_rows, n_cols> CAP (
         initial_state, 
