@@ -1,0 +1,30 @@
+// num steps
+100
+// output freq
+1
+// height width
+3 3
+// init state
+-1 -1 -1 -1 -1
+-1 2 1 1 -1
+-1 1 1 1 -1
+-1 1 1 1 -1
+-1 -1 -1 -1 -1
+// init age
+-1 -1 -1 -1 -1
+-1 0 0 0 -1
+-1 0 0 0 -1
+-1 0 0 0 -1
+-1 -1 -1 -1 -1
+// init sickDays
+-1 -1 -1 -1 -1
+-1 0 0 0 -1
+-1 0 0 0 -1
+-1 0 0 0 -1
+-1 -1 -1 -1 -1
+// User input (if false provided rules, if true leave blank)
+"false" "true"
+// select neighborhood type
+"full" "cross"
+// select rule
+"superSpread" "specifySteps"
