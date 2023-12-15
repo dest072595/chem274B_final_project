@@ -7,9 +7,10 @@
 #include <iostream>
 #include <map> 
 
-//size_t rows, size_t cols,
 template <typename T, size_t n_rows, size_t n_cols> 
 class Cellular_Automata {
+    // This class provides a generic framework for performing 2D cellular Automata simulations
+    // 1D simulations are supported by specifying a single row
     private: 
         std::vector<std::vector<T>> _hidden_state; 
         std::function< T (const std::array<std::array<T, n_cols>, n_rows>)> _updateRule;
@@ -21,21 +22,10 @@ class Cellular_Automata {
 
         const std::array<std::array<T, n_cols>, n_rows> get_neighborhood_around(int row, int col)
         {
-            // empty initialization
-            
-            std::array<std::array<T, n_cols>, n_rows> neighborhood {};
-            
-            // std::cout << "_rpad: " << _rpad << std::endl;
-            // std::cout << "_cpad: " << _cpad << std::endl;
-            // std::cout << "n_row: " << n_rows << std::endl;
-            // std::cout << "n_col: " << n_cols << std::endl;
-            // std::cout << "row: " << row << std::endl;
-            // std::cout << "col: " << col << std::endl;
+            // Helper Function for Calculating the Update Step
+           std::array<std::array<T, n_cols>, n_rows> neighborhood {};
             for(int i = - _rpad ; i <= _rpad; i++){
                 for(int j = -_cpad ; j <= _cpad; j++){
-                    // std::cout << "i: " << i << std::endl;
-                    // std::cout << "j: " << j << std::endl;
-                    
                     neighborhood.at(i + _rpad).at(j + _cpad) = _hidden_state.at(row + i).at(col + j); 
                 }
             }
@@ -74,12 +64,11 @@ class Cellular_Automata {
         }
 
         // Initialize the hidden state empty 
-        
         _hidden_state = std::vector<std::vector<T>> ( initial_state.size() + (2 * _rpad), std::vector<T> (initial_state.at(0).size() + (2 * _cpad)));
 
 
         // Copy intial state to center of hidden state
-        for(size_t i = 0; i < initial_state.size(); i++){
+        for(int i = 0; i < initial_state.size(); i++){
             std::copy(
                 initial_state.at(i).begin(),
                 initial_state.at(i).end(),
@@ -106,8 +95,7 @@ class Cellular_Automata {
         void update(){
             // Initialize Empty State
             std::vector<std::vector<T>> next_hidden_state (_hidden_state.size(),std::vector<T>(_hidden_state.at(0).size())); 
-            //std::cout << "hidden state size " << _hidden_state.size() << std::endl; 
-            //std::cout << "hidden state.at(0) size " << _hidden_state.at(0).size() << std::endl; 
+
             // Calculate New Inbounds State  
             for(int i = _rpad; i < _hidden_state.size() - _rpad; i++){
             for(int j = _cpad; j < _hidden_state.at(0).size() - _cpad; j++){
@@ -140,10 +128,6 @@ class Cellular_Automata {
             }
             }
             return out_state; 
-        }
-
-        auto gimme(){
-            return _hidden_state; 
         }
     
 }; 
@@ -265,3 +249,18 @@ template<typename T>
 std::function<void (std::vector<std::vector<T>>& state, size_t rpad, size_t cpad)> StraightConditionalTransition(const std::map<T,T>& value){
     return [](std::vector<std::vector<T>>& state, size_t rpad, size_t cpad){};
 }
+
+// Update Rule for "Majority Rule" as Described in Lecture
+std::function<bool (const std::array<std::array<bool,3>,1>) > MajorityRule = [](const std::array<std::array<bool,3>,1> neighborhood)-> bool 
+{   
+    int count = 0; 
+    if (neighborhood.at(0).at(0))
+        count += 1; 
+    if (neighborhood.at(0).at(1))
+        count += 1; 
+    if (neighborhood.at(0).at(2))
+        count += 1;
+
+    return count >= 2;
+}; 
+
