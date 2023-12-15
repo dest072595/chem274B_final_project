@@ -28,8 +28,13 @@ int main(){
     std::vector<std::vector<Person>> initial_state (rows, std::vector<Person>(cols, Person())); 
 
     // create update rule 
-        // This rule replaces everyone with a regular person
-    std::function<Person (const std::array<std::array<Person, n_cols>, n_rows>&) > updateRule = [](const std::array<std::array<Person, n_cols>, n_rows>& arr)-> Person {return Person();}; 
+        // This rule replaces everyone with a 'c' person
+    std::function<Person (const std::array<std::array<Person, n_cols>, n_rows>&) > updateRule = [](const std::array<std::array<Person, n_cols>, n_rows>& arr)-> Person 
+    { 
+        Person p;
+        p.health = 'c';
+        return p;
+    }; 
     
 
     // create boundary rule 
@@ -44,9 +49,10 @@ int main(){
         outOfBoundsRule
     );
 
-    auto intial_out_state = CAP.getState();
-    std::cout << "in main " << std::endl;
-    print_state(intial_out_state); 
+    print_state(CAP.getState()); 
+    CAP.update(); 
+
+    print_state(CAP.getState()); 
 
     return 0; 
 }
