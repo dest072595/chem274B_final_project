@@ -7,6 +7,7 @@
 #include <format> 
 #include <iostream>
 
+//size_t rows, size_t cols,
 template <typename T, size_t n_rows, size_t n_cols> 
 class Cellular_Automata {
     private: 
@@ -18,14 +19,14 @@ class Cellular_Automata {
         size_t _rpad; 
         size_t _cpad;
 
-        const std::array<std::array<T, n_rows>, n_cols>& get_neighborhood_around(size_t row, size_t col)
+        const std::array<std::array<T, n_rows>, n_cols> get_neighborhood_around(size_t row, size_t col)
         {
             // empty initialization
-            std::array<std::array<T, (2 * _cpad + 1)>, (2 * _rpad + 1)> n {};
+            std::array<std::array<T, n_rows>, n_cols> n {};
 
-            for(size_t i = row; i < row + (2 * _rpad) + 1; i++){
-                for(size_t j = col; j < col + (2 * _cpad) + 1; j++){
-                    n.at(i).at(j) = _hidden_state.at(i + _rpad).at(j + _cpad); 
+            for(size_t i = 0; i < n_rows; i++){
+                for(size_t j = 0; j < n_cols; j++){
+                    n.at(i).at(j) = _hidden_state.at(row + i - _rpad).at(col + j - _cpad); 
                 }
             }
             return n; 
@@ -37,8 +38,7 @@ class Cellular_Automata {
             std::function<void (std::vector<std::vector<T>>& state, size_t, size_t)> outOfBoundsRule 
         )
         {
-        
-        std::cout << "checkpoint 1" << std::endl;
+
         // Checking Input Rows
         if(initial_state.size() == 0){
             throw std::invalid_argument("intial state number of rows must be a positive natural number"); 
@@ -63,15 +63,11 @@ class Cellular_Automata {
             _cpad = (n_cols - 1) / 2; 
         }
 
-        std::cout << "checkpoint 2" << std::endl;
         // Initialize the hidden state empty 
         
         _hidden_state = std::vector<std::vector<T>> ( initial_state.size() + (2 * _rpad), std::vector<T> (initial_state.at(0).size() + (2 * _cpad)));
 
-        std::cout << "_hidden_state.size() is :" << _hidden_state.size() << std::endl; 
-        std::cout << "_hidden_state.at(0).size() is: " << _hidden_state.at(0).size() << std::endl; 
 
-        std::cout << "checkpoint 3" << std::endl;
         // Copy intial state to center of hidden state
         for(size_t i = 0; i < initial_state.size(); i++){
             std::copy(
@@ -81,11 +77,6 @@ class Cellular_Automata {
             );
         }
 
-        std::cout << "_hidden_state.size() is :" << _hidden_state.size() << std::endl; 
-        std::cout << "_hidden_state.at(0).size() is: " << _hidden_state.at(0).size() << std::endl; 
-
-        std::cout << "checkpoint 4" << std::endl;
-        
         // Store update rule 
         _updateRule = updateRule; 
 
@@ -95,13 +86,9 @@ class Cellular_Automata {
 
         // Perform OOB Rule
         _outOfBoundsRule(_hidden_state, _rpad, _cpad); 
-        std::cout << "_hidden_state.size() is :" << _hidden_state.size() << std::endl; 
-        std::cout << "_hidden_state.at(0).size() is: " << _hidden_state.at(0).size() << std::endl; 
-
 
         _step = 0; 
         // end of constructor
-        std::cout << "checkpoint 5" << std::endl;
         }
 
 
@@ -134,16 +121,10 @@ class Cellular_Automata {
 
         // Returns the output state of the Simulation
         const std::vector<std::vector<T>> getState() const{
-            std::cout << "_rpad is " << _rpad << std::endl;
-            std::cout << "_cpad is " << _cpad << std::endl;
-            std::cout << "_hidden_state.size() is :" << _hidden_state.size() << std::endl; 
-            std::cout << "_hidden_state.at(0).size() is: " << _hidden_state.at(0).size() << std::endl; 
             std::vector<std::vector<T>> out_state (_hidden_state.size() - (2 * _rpad), std::vector<T>(_hidden_state.at(0).size() - (2 * _cpad), T())); 
-            std::cout << "test" << std::endl; 
 
             for(size_t i = 0; i < out_state.size(); i++){
             for(size_t j = 0; j < out_state.at(0).size(); j++){
-                std::cout << "i is: " << i << " and j is: " << j << std::endl;
                 out_state.at(i).at(j) = _hidden_state.at(i + _rpad).at(j + _cpad);
             }
             }
