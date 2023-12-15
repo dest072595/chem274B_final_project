@@ -212,12 +212,12 @@ void fill_data(
     const T value, 
     int dest_row, 
     int dest_col, 
-    int num_rows_to_copy, 
-    int num_cols_to_copy
+    int num_rows_to_fill, 
+    int num_cols_to_fill
     )
 {
-    for(int i = 0; i < num_rows_to_copy; i++){
-    for(int j = 0; j < num_cols_to_copy; j++){
+    for(int i = 0; i < num_rows_to_fill; i++){
+    for(int j = 0; j < num_cols_to_fill; j++){
         data.at(dest_row + i).at(dest_col + j) = value; 
     }
     }
