@@ -158,7 +158,7 @@ int Cellular_Automata<T,n_rows,n_cols>::count(std::function<bool(const T)> predi
         }
     }
     return count; 
-}
+cd}
 
 
 // helper function for copying around data in a std::vector<std::vector<T>> 
