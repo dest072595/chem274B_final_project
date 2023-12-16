@@ -68,32 +68,32 @@ std::function<Person(std::array<std::array<Person,3>,3>)> superSpread3Wrapped(st
 
 Person specifySteps3(std::array<std::array<Person, 3>, 3> Neighborhood, std::string neighborType) {
     // if dead, stay dead
-        if(Neighborhood[1][1].state == 3) {
-            return Neighborhood[1][1];
-        } 
-        // if neighbor sick, make worse
-        else if(checkSick3(Neighborhood, neighborType)) {
-            Neighborhood[1][1].step++;
-            // Check threshold to see progression
-            if(Neighborhood[1][1].state == 0 & Neighborhood[1][1].step > Neighborhood[1][1].toHealthy) {
-                Neighborhood[1][1].state++;
-                Neighborhood[1][1].step = 0;
-            } else if(Neighborhood[1][1].state == 1 & Neighborhood[1][1].step > Neighborhood[1][1].toSick) {
-                Neighborhood[1][1].state++;
-                Neighborhood[1][1].step = 0;
-            } else if(Neighborhood[1][1].state == 2 & Neighborhood[1][1].step > Neighborhood[1][1].toDead) {
-                Neighborhood[1][1].state++;
-                Neighborhood[1][1].step = 0;
-            }
-            return Neighborhood[1][1];
-
-
-        } // if no sick, recover if old enough
-        else if(Neighborhood[1][1].state == 2 & Neighborhood[1][1].step >= Neighborhood[1][1].toRecover) {
-            Neighborhood[1][1].state = 0;
+    if(Neighborhood[1][1].state == 3) {
+        return Neighborhood[1][1];
+    } 
+    // if neighbor sick, make worse
+    else if(checkSick3(Neighborhood, neighborType)) {
+        Neighborhood[1][1].step++;
+        // Check threshold to see progression
+        if(Neighborhood[1][1].state == 0 & Neighborhood[1][1].step > Neighborhood[1][1].toHealthy) {
+            Neighborhood[1][1].state++;
+            Neighborhood[1][1].step = 0;
+        } else if(Neighborhood[1][1].state == 1 & Neighborhood[1][1].step > Neighborhood[1][1].toSick) {
+            Neighborhood[1][1].state++;
+            Neighborhood[1][1].step = 0;
+        } else if(Neighborhood[1][1].state == 2 & Neighborhood[1][1].step > Neighborhood[1][1].toDead) {
+            Neighborhood[1][1].state++;
             Neighborhood[1][1].step = 0;
         }
         return Neighborhood[1][1];
+
+
+    } // if no sick, recover if old enough
+    else if(Neighborhood[1][1].state == 2 & Neighborhood[1][1].step >= Neighborhood[1][1].toRecover) {
+        Neighborhood[1][1].state = 0;
+        Neighborhood[1][1].step = 0;
+    }
+    return Neighborhood[1][1];
 }
 
 std::function<Person(std::array<std::array<Person,3>,3>)> specifySteps3Wrapped(std::string neighborhoodType) {
@@ -157,18 +157,18 @@ int main(void) {
                             ruleFunc = superSpread3Wrapped(static_cast<std::string>(neighborhood));
 
                         } 
-                        // else if(rule == "specifySteps") {
-                        //     ruleFunc = superSpread3Wrapped(neighborhood)
-                        // }
+                        else if(updateRule == "specifySteps") {
+                            ruleFunc = specifySteps3Wrapped(neighborhood);
+                        }
                     
                     } else if (var == "updateRule"){
                         iss >> updateRule;
 
                     } else if (var == "boundaryRule") {
-                        if(updateRule == "periodic"){
+                        iss >> boundaryRule;
+                        if(boundaryRule == "periodic"){
                             outOfBoundsRule = PeriodicBoundaryRule<Person>;
                         } else {
-                            std::cout << "Update" << std::endl;
                             outOfBoundsRule = FixedBoundaryRule<Person>(Person{-1,-1,-1,-1,-1,-1,-1});
                         }
 
