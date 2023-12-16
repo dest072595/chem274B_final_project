@@ -62,7 +62,7 @@ int main(){
     }; 
     
     // create update rule 
-    auto outOfBoundsRule = PeriodicBoundaryRule<Person>();
+    auto outOfBoundsRule = PeriodicBoundaryRule<Person>;
 
     Cellular_Automata<Person, n_rows, n_cols> CA (
         initial_state, 
