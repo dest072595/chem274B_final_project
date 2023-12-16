@@ -153,8 +153,8 @@ void copy_data_around(
 
 // Periodic Boundary Condition Function, Automatically makes an update rule for a given typename T
 template<typename T>
-std::function<void (std::vector<std::vector<T>>& state, int rpad, int cpad)> PeriodicBoundaryRule(){
-    return [](std::vector<std::vector<T>>& state, size_t rpad, size_t cpad){
+std::function<void (std::vector<std::vector<T>>& state, int rpad, int cpad)> PeriodicBoundaryRule =
+    [](std::vector<std::vector<T>>& state, size_t rpad, size_t cpad){
         int rows = state.size();
         int cols = state.at(0).size(); 
 
@@ -186,8 +186,7 @@ std::function<void (std::vector<std::vector<T>>& state, int rpad, int cpad)> Per
 
         // Copy data to the bottom-right corner
         copy_data_around(state, end_row - rpad, end_col - cpad, rows - rpad, cols - cpad, rpad, cpad);    
-    };
-}
+};
 
 // helper function for filling data in a std::vector<std::vector<T>> 
 template<typename T> 
@@ -245,10 +244,84 @@ std::function<void (std::vector<std::vector<T>>& state, int rpad, int cpad)> Fix
     };
 }
 
+// Returns the Von Neumann Neighboors from a 3x3 Neighborhood
+template<typename T> 
+std::function<std::vector<T> (const std::array<std::array<T,3>,3>)> VonNeumannNeighborhood = [](const std::array<std::array<T,3>,3> neighborhood){
+    std::vector<T> neighbors; 
+    neighbors.push_back(neighborhood.at(0).at(1));
+    neighbors.push_back(neighborhood.at(1).at(0));
+    neighbors.push_back(neighborhood.at(1).at(2));
+    neighbors.push_back(neighborhood.at(2).at(1));
+    return neighbors; 
+};
+
+// Returns the Moore Neighboors from a 3x3 Neighborhood
+template<typename T> 
+std::function<std::vector<T> (const std::array<std::array<T,3>,3>)> MooreNeighborhood = [](const std::array<std::array<T,3>,3> neighborhood){
+    std::vector<T> neighbors; 
+    neighbors.push_back(neighborhood.at(0).at(0));
+    neighbors.push_back(neighborhood.at(0).at(1));
+    neighbors.push_back(neighborhood.at(0).at(2));
+    neighbors.push_back(neighborhood.at(1).at(0));
+    neighbors.push_back(neighborhood.at(1).at(2));
+    neighbors.push_back(neighborhood.at(2).at(0));
+    neighbors.push_back(neighborhood.at(2).at(1));
+    neighbors.push_back(neighborhood.at(2).at(2));
+    return neighbors; 
+};
+
+
+// Update Rule for Neighboor Conditional Transition as Described in Lecture
+// It first looks for internal tranistion states
+// failing, it then looks for external transition states
 template<typename T>
-std::function<void (std::vector<std::vector<T>>& state, size_t rpad, size_t cpad)> StraightConditionalTransition(const std::map<T,T>& value){
-    return [](std::vector<std::vector<T>>& state, size_t rpad, size_t cpad){};
+std::function<T (const std::array<std::array<T,3>,3>) > NeighborConditionalRule (
+    std::map<T,T> external_transition_map, 
+    std::map<T,T> internal_transition_map,
+    std::function<std::vector<T> (const std::array<std::array<T,3>,3>)> neighborhoodRule
+    )
+{
+  return [external_transition_map, internal_transition_map, neighborhoodRule](const std::array<std::array<T,3>,3> neighborhood)-> T 
+{   
+    T me = neighborhood.at(1).at(1); 
+    std::vector<T> neighboors = neighborhoodRule(neighborhood); 
+
+    // check for internal transition states 
+    auto it = internal_transition_map.find(me);
+    if(it != internal_transition_map.end()){
+        me = internal_transition_map.at(me);
+    } 
+    else
+    {
+    // check for external transition states
+    for(const auto& pair : external_transition_map){
+        auto other_it = std::find(neighboors.begin(), neighboors.end(), pair.first); 
+        if (other_it != neighboors.end()){
+            me = pair.second; 
+            break; 
+        }
+    }
+    }
+    
+    return me; 
+}; 
 }
+
+
+// Update Rule for Staight Conditional Transition as Described in Lecture
+template<typename T>
+std::function<T (const std::array<std::array<T,1>,1>) > StraightConditionalRule (std::map<T,T> transition_map){
+  return [transition_map](const std::array<std::array<T,1>,1> neighborhood)-> T 
+{   
+    T me = neighborhood.at(0).at(0);
+    auto it = transition_map.find(me); 
+    if (it != transition_map.end()) 
+        me = transition_map.at(me); 
+    return me ; 
+}; 
+}
+
+
 
 // Update Rule for "Majority Rule" as Described in Lecture
 std::function<bool (const std::array<std::array<bool,3>,1>) > MajorityRule = [](const std::array<std::array<bool,3>,1> neighborhood)-> bool 
@@ -263,4 +336,5 @@ std::function<bool (const std::array<std::array<bool,3>,1>) > MajorityRule = [](
 
     return count >= 2;
 }; 
+
 

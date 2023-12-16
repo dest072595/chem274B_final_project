@@ -37,6 +37,12 @@ int main(){
 
     // create a 4 row by 5 column initial state
     std::vector<std::vector<Person>> initial_state (rows, std::vector<Person>(cols, Person())); 
+    initial_state.at(0).at(0) = Person{'c'};
+    initial_state.at(3).at(5) = Person{'c'};
+    initial_state.at(4).at(2) = Person{'c'};
+    initial_state.at(0).at(3) = Person{'q'};
+    initial_state.at(2).at(1) = Person{'q'};
+
 
     // create update rule 
     std::function<Person (const std::array<std::array<Person, n_cols>, n_rows>) > updateRule = [](const std::array<std::array<Person, n_cols>, n_rows> neighborhood)-> Person 
@@ -48,12 +54,15 @@ int main(){
             r.health = 'c';
         else 
             r.health = 'q' ;
+        
+        if (neighborhood.at(0).at(1).health == 'q')
+            r.health = 'h';
         return r;
 
     }; 
     
     // create update rule 
-    auto outOfBoundsRule = FixedBoundaryRule<Person>(Person{'x'});
+    auto outOfBoundsRule = PeriodicBoundaryRule<Person>;
 
     Cellular_Automata<Person, n_rows, n_cols> CA (
         initial_state, 
@@ -61,16 +70,10 @@ int main(){
         outOfBoundsRule
     );
 
-    print_state(initial_state);
-
-    CA.update(); 
-    print_state(CA.getState()); 
-    
-    CA.update(); 
-    print_state(CA.getState()); 
-
-
-    
-
+    for (int i = 0; i < 6; i++){
+        print_state(CA.getState()); 
+        CA.update();   
+    }
+   
     return 0; 
 }
