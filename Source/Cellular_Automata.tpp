@@ -105,7 +105,7 @@ const std::vector<std::vector<T>> Cellular_Automata<T, n_rows, n_cols>::getState
 }
 
 template <typename T, size_t n_rows, size_t n_cols> 
-const std::array<std::array<T, n_cols>, n_rows> Cellular_Automata<T, n_rows, n_cols>::get_neighborhood_around(int row, int col)
+const std::array<std::array<T, n_cols>, n_rows> Cellular_Automata<T, n_rows, n_cols>::get_neighborhood_around(int row, int col) const
 {
     // Helper Function for Calculating the Update Step
     std::array<std::array<T, n_cols>, n_rows> neighborhood {};
@@ -115,6 +115,49 @@ const std::array<std::array<T, n_cols>, n_rows> Cellular_Automata<T, n_rows, n_c
         }
     }
     return neighborhood; 
+}
+
+// This function takes a function for accessing a specific element of more complex cells 
+// You want to print
+template <typename T, size_t n_rows, size_t n_cols>
+void Cellular_Automata<T,n_rows,n_cols>::print(
+    std::ostream & out, 
+    std::function<std::ostream & (std::ostream &, const T&)> print_func 
+    ) const
+{
+    for (const auto& vec : getState()){
+        for (const auto& elem : vec){
+            print_func(out, elem);
+        }
+    out << std::endl;
+    }
+}
+
+
+// This function prints out each cell, assumes that << has been defined for that type
+template <typename T, size_t n_rows, size_t n_cols> 
+std::ostream & operator << (std::ostream & out, const Cellular_Automata<T,n_rows,n_cols> CA){
+    for (const auto& vec : CA.getState()){
+        for (const auto& elem : vec){
+            out << elem << " "; 
+        }
+        out << std::endl;
+    }
+    return out;
+} 
+
+// This function counts all the cells in the current state that meet the predicate
+template <typename T, size_t n_rows, size_t n_cols> 
+int Cellular_Automata<T,n_rows,n_cols>::count(std::function<bool(const T)> predicate) const{
+    int count = 0; 
+    for (const auto& vec : getState()){
+        for (const auto& elem : vec){
+            if (predicate(elem)){
+                count ++; 
+            }
+        }
+    }
+    return count; 
 }
 
 
