@@ -32,9 +32,3 @@ LIST OF FILES IN THIS DIRECTORY:
 - Makefile: Contains the targets:
   - `all` : Compiles all of the CPP executables and moves them to ./Bin.
   - `clean` : Removes all of the C++ executables from ./Bin.
-
-# file in this directory
-
-# Updates:
-
-- I implimented the file structure as described above and added the Report
