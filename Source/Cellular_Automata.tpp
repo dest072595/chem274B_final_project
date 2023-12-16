@@ -1,6 +1,6 @@
 #pragma once
 
-#include<Cellular_Automata.h>
+#include "../Include/Cellular_Automata.h"
 
 template <typename T, size_t n_rows, size_t n_cols> 
 Cellular_Automata<T,n_rows,n_cols>::Cellular_Automata(
