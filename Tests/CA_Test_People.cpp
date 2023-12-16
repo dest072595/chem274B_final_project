@@ -15,15 +15,6 @@ struct Person{
     char health = 'h'; 
 };
 
-void print_state(const std::vector<std::vector<Person>>& state){
-    for(auto vec : state){
-        for(auto p : vec){
-            std::cout << p.health << " "; 
-        }
-        std::cout << std::endl;
-    }
-    std::cout << std::endl; 
-}
 
 int main(){
     // rows of the initial state 
@@ -70,8 +61,16 @@ int main(){
         outOfBoundsRule
     );
 
+    // define struct printer
+    auto print_person = [](std::ostream& o, const Person& p) -> std::ostream&
+    {
+        o << p.health; 
+        return o;
+    };
+
     for (int i = 0; i < 6; i++){
-        print_state(CA.getState()); 
+        CA.print(std::cout, print_person);
+        std::cout << std::endl; 
         CA.update();   
     }
    

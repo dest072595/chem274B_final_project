@@ -4,7 +4,6 @@ CPPFLAGS = -std=c++20 -Og
 
 BIN_OBJS = CA_Test_People CA_Test_Majority CA_Test_Straight_Conditional CA_Test_Neighbor_Conditional
 
-
 BIN_DIR = ../BIN
 
 INC_DIR = ../INCLUDE

@@ -8,14 +8,6 @@
 
 #include "Cellular_Automata.h"
 
-void print_state(const std::vector<std::vector<int>>& state){
-    for(auto vec : state){
-        for(auto b : vec){
-            std::cout << b << " "; 
-        }
-        std::cout << std::endl;
-    }
-}
 
 int main(){
     // rows in the neighborhood
@@ -58,7 +50,7 @@ int main(){
     );
 
     for (int i = 0; i < 8; i++){
-        print_state(CA.getState()); 
+        std::cout << CA; 
         std::cout << std::endl; 
         CA.update(); 
     }
