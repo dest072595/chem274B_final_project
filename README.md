@@ -33,10 +33,9 @@ Students need to create the following subdirectories for this Assigment:
 
 LIST OF FILES IN THIS DIRECTORY:
 
-- README (this file - make sure you add your own comments here)
-- Makefile: <students create makefiles for Assignment 4>
-- ethane.txt - test file #1 for problem 1
-- octane.txt - test file #2 for problem 1
+- README : This file, provides an overview of the repository
+- Makefile: Contains the commands needed to 
+
 
 # - Students need to also place their Answers-Assignment4.pdf
 
