@@ -1,4 +1,4 @@
-#include "Cellular_Automata.h"
+#include "../Include/Cellular_Automata.h"
 #include <vector>
 #include <string>
 #include <fstream>
@@ -41,9 +41,9 @@ bool checkSick3(std::array<std::array<Person, 3>, 3> Neighborhood, std::string t
         } else {
             return true;
         }
-    } else {
-        return false;
-    }
+    } 
+    return false;
+    
 }
 
 Person superSpread3(std::array<std::array<Person, 3>, 3> Neighborhood, std::string neighborType) {
@@ -106,12 +106,14 @@ int main(void) {
     std::string line, test, var, neighborhood, rule;
     int  numSteps, outputFreq, height, width, stat, count;
     std::function<Person(std::array<std::array<Person,3>,3>)> ruleFunc;
-
-    std::ifstream initState("./input_file.txt");
-
+    
     std::vector<std::vector<Person>> initBoard;
-
+    
+    std::ifstream initState("../Applications/input_file.txt");
+    
+    count = 0;
     if(initState.is_open()) {
+        // std::cout << var << std::endl;
         while(!initState.eof()) {
             while(std::getline(initState, line)) {
                 std::istringstream iss(line);
@@ -151,69 +153,91 @@ int main(void) {
                         if(rule == "superSpread") {
                             ruleFunc = superSpread3Wrapped(neighborhood);
 
-                        } else if(rule == "specifySteps") {
-
-                        }
+                        } 
+                        // else if(rule == "specifySteps") {
+                        //     ruleFunc = superSpread3Wrapped(neighborhood)
+                        // }
                         
                     } else {
-                        count = 0;
                         for(int i=0; i<width; i++) {
                             iss >> stat;
+                            std::cout << stat << " " << count << " " << i << std::endl;
                             if(var == "state") {
-                                initBoard[count][i].state = stat;
+                                initBoard.at(count).at(i).state = stat;
                             } else if (var == "age") {
-                                initBoard[count][i].age = stat;
+                                initBoard.at(count).at(i).age = stat;
                             } else if (var == "toRecover") {
-                                initBoard[count][i].toRecover = stat;
+                                initBoard.at(count).at(i).toRecover = stat;
                             } else if (var == "toHealthy") {
-                                initBoard[count][i].toHealthy = stat;
+                                initBoard.at(count).at(i).toHealthy = stat;
                             } else if (var == "toSick") {
-                                initBoard[count][i].toSick = stat;
+                                initBoard.at(count).at(i).toSick = stat;
                             } else if (var == "toDead") {
-                                initBoard[count][i].toDead = stat;
+                                initBoard.at(count).at(i).toDead = stat;
                             }
-
-
                         }
-                        if(count == height-1) {
+                        count ++;
+                        if(count == height) {
                             count = 0;
-                            std::cout << "Filled '" << var << "'" << std::endl;
+                            // std::cout << "Filled '" << var << "'" << std::endl;
                         }
 
                     
+                    }
                 }
+
+                std::cout << var << std::endl;
             }
         }
+    } else {
+        std::cout << "ERROR LOADING FILE" << std::endl;
+    }
+    initState.close();
+    // create update rule 
+    auto outOfBoundsRule = PeriodicBoundaryRule<Person>();
+    
+    // Testing
+    std::cout << "before loop" << std::endl;
+    for(int i=0; i<height; i++) {
+        for(int ii=0; ii<width; ii++) {
+            std::cout << initBoard.at(i).at(ii).state << " ";
+        }
+        std::cout << std::endl;
     }
 
-    Cellular_Automata board(initBoard, ruleFunc);
-
-
+    Cellular_Automata<Person, 3, 3> board(initBoard, ruleFunc, outOfBoundsRule);
+    
+    std::cout << "Initial state set. Running simmulation" << std::endl;
     // Run the simulation
-    count = 0;
+    count = 1;
     for(int i=0; i<numSteps; i++) {
-        board.update();
+        
         if(count == outputFreq) {
+            count = 0;
             // Create output file
             std::string filename;
-            filename = std::to_string(count) + ".csv";
+            filename = "../Utils/Visualization/Data/" + std::to_string(i) + ".csv";
             std::ofstream of(filename);
 
             // Create current state board
             std::vector<std::vector<Person>> currState;
             currState = board.getState();
-            
             if(of.is_open()) {
-               // Loop through board and output state attribute.
+                // Loop through board and output state attribute.
                 for(int h=0; h<height; h++) {
                     for(int w=0; w<width; w++) {
-                        of << currState[h][w].state << ', ';
+                        of << currState.at(h).at(w).state << ", ";
                     }
                     of << std::endl;
-            } 
+                } 
+            } else {
+                std::cout << "ERROR OUTFILE NOT OPEN" << std::endl;
             }
             
         }
+
+        board.update();
+        count++;
     }
     // std::array<std::array<>> updateRules; // function takes array and returns single value 
     // std::vector<std::vector<Person, 3> 3> outOfBoundsRule;
