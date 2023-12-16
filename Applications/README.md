@@ -22,3 +22,8 @@ Contributors: Austin Glover, Destinee Maldonaldo, Sam Wollenburg
   - `toHealthy` : This is a `height` by `width` matrix of ints seperated by spaces. Each cell represents a person's required number of iterations before becoming healthy is allowed.
   - `toSick` : This is a `height` by `width` matrix of ints seperated by spaces. Each cell represents a person's required number of iterations before being sick is allowed.
   - `toDead` : This is a `height` by `width` matrix of ints seperated by spaces. Each cell represents a person's required number of iterations before death is allowed.
+- Makefile : Contains targets:
+  - `all` : Makes all applications.
+  - `clean` : Removes all applications from ../Bin.
+  - `COVID-19_simulation` : Compiles the COVID-19_simulation.
+- README.md : This file.
