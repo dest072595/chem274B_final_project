@@ -8,6 +8,7 @@
 // It shows the how to create and exercise cellular automata
 // It shows examples of provided rules and how they behave
 // As well as how to construct your own more complicated behavior
+// including how to use the advanced printing
 
 #include "Cellular_Automata.h"
 
