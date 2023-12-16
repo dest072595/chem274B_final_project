@@ -4,7 +4,7 @@
 // Group 11 
 //
 // This is file is a simple demonstrator and tester of the Cellular_Automata 
-// With the "Majority Rule" provided update rule and <bool> datatype
+// With the "Straight Conditional" provided update rule and <int> datatype
 
 #include "Cellular_Automata.h"
 
