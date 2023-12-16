@@ -1,5 +1,5 @@
 // steps
-100
+11
 // freq
 1
 // height
@@ -7,12 +7,12 @@
 // width
 3
 // neighborhood
-cross
+full
 // rule
 superSpread
 // state
-2 1 1
 1 1 1
+1 2 1
 1 1 1
 // age
 0 0 0

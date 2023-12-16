@@ -48,14 +48,15 @@ bool checkSick3(std::array<std::array<Person, 3>, 3> Neighborhood, std::string t
 
 Person superSpread3(std::array<std::array<Person, 3>, 3> Neighborhood, std::string neighborType) {
     // if dead, stay dead
-    if(Neighborhood[1][1].state == 3) {
-        return Neighborhood[1][1];
+    Person p = Neighborhood[1][1];
+    if(p.state == 3) {
+        return p;
     } 
     // if neighbor sick, make sick
     else if(checkSick3(Neighborhood, neighborType)) {
-        Neighborhood[1][1].state ++;
+        p.state ++;
     }
-    return Neighborhood[1][1];
+    return p;
 }
 
 std::function<Person(std::array<std::array<Person,3>,3>)> superSpread3Wrapped(std::string neighborhoodType) {
@@ -151,7 +152,7 @@ int main(void) {
                         iss >> rule;
 
                         if(rule == "superSpread") {
-                            ruleFunc = superSpread3Wrapped(neighborhood);
+                            ruleFunc = superSpread3Wrapped(static_cast<std::string>(neighborhood));
 
                         } 
                         // else if(rule == "specifySteps") {
@@ -161,7 +162,7 @@ int main(void) {
                     } else {
                         for(int i=0; i<width; i++) {
                             iss >> stat;
-                            std::cout << stat << " " << count << " " << i << std::endl;
+                            // std::cout << stat << " " << count << " " << i << std::endl;
                             if(var == "state") {
                                 initBoard.at(count).at(i).state = stat;
                             } else if (var == "age") {
@@ -186,7 +187,7 @@ int main(void) {
                     }
                 }
 
-                std::cout << var << std::endl;
+                // std::cout << var << std::endl;
             }
         }
     } else {
@@ -194,16 +195,17 @@ int main(void) {
     }
     initState.close();
     // create update rule 
-    auto outOfBoundsRule = PeriodicBoundaryRule<Person>();
+    auto outOfBoundsRule = FixedBoundaryRule<Person>(Person{-1,-1,-1,-1,-1,-1,-1});
+    // auto outOfBoundsRule = PeriodicBoundaryRule<Person>();
     
     // Testing
-    std::cout << "before loop" << std::endl;
-    for(int i=0; i<height; i++) {
-        for(int ii=0; ii<width; ii++) {
-            std::cout << initBoard.at(i).at(ii).state << " ";
-        }
-        std::cout << std::endl;
-    }
+    // std::cout << "before loop" << std::endl;
+    // for(int i=0; i<height; i++) {
+    //     for(int ii=0; ii<width; ii++) {
+    //         std::cout << initBoard.at(i).at(ii).state << " ";
+    //     }
+    //     std::cout << std::endl;
+    // }
 
     Cellular_Automata<Person, 3, 3> board(initBoard, ruleFunc, outOfBoundsRule);
     
