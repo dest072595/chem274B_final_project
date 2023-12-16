@@ -31,7 +31,7 @@ int main(){
     
     
     // create update rule 
-    auto outOfBoundsRule = PeriodicBoundaryRule<int>();
+    auto outOfBoundsRule = PeriodicBoundaryRule<int>;
 
     std::map<int,int> external_transition_map {
     {1,1}

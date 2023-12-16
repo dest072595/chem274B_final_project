@@ -153,8 +153,8 @@ void copy_data_around(
 
 // Periodic Boundary Condition Function, Automatically makes an update rule for a given typename T
 template<typename T>
-std::function<void (std::vector<std::vector<T>>& state, int rpad, int cpad)> PeriodicBoundaryRule(){
-    return [](std::vector<std::vector<T>>& state, size_t rpad, size_t cpad){
+std::function<void (std::vector<std::vector<T>>& state, int rpad, int cpad)> PeriodicBoundaryRule =
+    [](std::vector<std::vector<T>>& state, size_t rpad, size_t cpad){
         int rows = state.size();
         int cols = state.at(0).size(); 
 
@@ -186,8 +186,7 @@ std::function<void (std::vector<std::vector<T>>& state, int rpad, int cpad)> Per
 
         // Copy data to the bottom-right corner
         copy_data_around(state, end_row - rpad, end_col - cpad, rows - rpad, cols - cpad, rpad, cpad);    
-    };
-}
+};
 
 // helper function for filling data in a std::vector<std::vector<T>> 
 template<typename T> 

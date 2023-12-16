@@ -4,7 +4,8 @@
 // Group 11 
 //
 // This is file is a simple demonstrator and tester of the Cellular_Automata 
-// With the "Majority Rule" provided update rule and <bool> datatype
+// With the "Majority Rule" provided update rule and <bool> datatype, and 
+// Fixed Boundary Conditions
 
 #include "Cellular_Automata.h"
 
@@ -32,7 +33,7 @@ int main(){
     
     
     // create update rule 
-    auto outOfBoundsRule = PeriodicBoundaryRule<bool>();
+    auto outOfBoundsRule = FixedBoundaryRule<bool>(false);
 
     Cellular_Automata<bool, n_rows, n_cols> CA (
         initial_state, 

@@ -27,7 +27,7 @@ int main(){
     
     
     // create update rule 
-    auto outOfBoundsRule = PeriodicBoundaryRule<int>();
+    auto outOfBoundsRule = PeriodicBoundaryRule<int>;
 
     std::map<int,int> update_map {
         {0,1},
