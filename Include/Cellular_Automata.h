@@ -245,15 +245,80 @@ std::function<void (std::vector<std::vector<T>>& state, int rpad, int cpad)> Fix
     };
 }
 
+// Returns the Von Neumann Neighboors from a 3x3 Neighborhood
+template<typename T> 
+std::function<std::vector<T> (const std::array<std::array<T,3>,3>)> VonNeumannNeighborhood = [](const std::array<std::array<T,3>,3> neighborhood){
+    std::vector<T> neighbors; 
+    neighbors.push_back(neighborhood.at(0).at(1));
+    neighbors.push_back(neighborhood.at(1).at(0));
+    neighbors.push_back(neighborhood.at(1).at(2));
+    neighbors.push_back(neighborhood.at(2).at(1));
+    return neighbors; 
+};
 
-// Update Rule for Staight Coniditional Progresion as Described in Lecture
+// Returns the Moore Neighboors from a 3x3 Neighborhood
+template<typename T> 
+std::function<std::vector<T> (const std::array<std::array<T,3>,3>)> MooreNeighborhood = [](const std::array<std::array<T,3>,3> neighborhood){
+    std::vector<T> neighbors; 
+    neighbors.push_back(neighborhood.at(0).at(0));
+    neighbors.push_back(neighborhood.at(0).at(1));
+    neighbors.push_back(neighborhood.at(0).at(2));
+    neighbors.push_back(neighborhood.at(1).at(0));
+    neighbors.push_back(neighborhood.at(1).at(2));
+    neighbors.push_back(neighborhood.at(2).at(0));
+    neighbors.push_back(neighborhood.at(2).at(1));
+    neighbors.push_back(neighborhood.at(2).at(2));
+    return neighbors; 
+};
+
+
+// Update Rule for Neighboor Conditional Transition as Described in Lecture
+// It first looks for internal tranistion states
+// failing, it then looks for external transition states
 template<typename T>
-std::function<T (const std::array<std::array<T,1>,1>) > StraightConditionalRule (std::map<T,T> update){
-  return [update](const std::array<std::array<T,1>,1> neighborhood)-> T 
+std::function<T (const std::array<std::array<T,3>,3>) > NeighborConditionalRule (
+    std::map<T,T> external_transition_map, 
+    std::map<T,T> internal_transition_map,
+    std::function<std::vector<T> (const std::array<std::array<T,3>,3>)> neighborhoodRule
+    )
+{
+  return [external_transition_map, internal_transition_map, neighborhoodRule](const std::array<std::array<T,3>,3> neighborhood)-> T 
 {   
-    int me = neighborhood.at(0).at(0); 
-    int next = update.at(me); 
-    return next ; 
+    T me = neighborhood.at(1).at(1); 
+    std::vector<T> neighboors = neighborhoodRule(neighborhood); 
+
+    // check for internal transition states 
+    auto it = internal_transition_map.find(me);
+    if(it != internal_transition_map.end()){
+        me = internal_transition_map.at(me);
+    } 
+    else
+    {
+    // check for external transition states
+    for(const auto& pair : external_transition_map){
+        auto other_it = std::find(neighboors.begin(), neighboors.end(), pair.first); 
+        if (other_it != neighboors.end()){
+            me = pair.second; 
+            break; 
+        }
+    }
+    }
+    
+    return me; 
+}; 
+}
+
+
+// Update Rule for Staight Conditional Transition as Described in Lecture
+template<typename T>
+std::function<T (const std::array<std::array<T,1>,1>) > StraightConditionalRule (std::map<T,T> transition_map){
+  return [transition_map](const std::array<std::array<T,1>,1> neighborhood)-> T 
+{   
+    T me = neighborhood.at(0).at(0);
+    auto it = transition_map.find(me); 
+    if (it != transition_map.end()) 
+        me = transition_map.at(me); 
+    return me ; 
 }; 
 }
 
